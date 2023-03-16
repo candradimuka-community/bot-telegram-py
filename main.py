@@ -1,5 +1,5 @@
 from telegram.ext import *
-from response import response
+from script.response import response
 import os
 from dotenv import load_dotenv
 load_dotenv()

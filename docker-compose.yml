@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  bot:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: bot
+    restart: unless-stopped
+    networks:
+      - bot
+    environment:
+      API_KEY: ${API_KEY}
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./script:/script
+
+# volumes:
+#   db:
+#     driver: local
+
+networks:
+  bot:
