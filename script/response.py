@@ -1,9 +1,9 @@
-def response(input_text):
+def response(input_text) -> str:
     message = input_text['message']
     chat = message['chat']
     text = message['text']
-    return {
-        "user_id": chat['id'],
-        "username": chat['username'],
-        "text": text
-    }
+
+    if text == "/all_data":
+        return str(input_text)
+    else:
+        return str(chat)
