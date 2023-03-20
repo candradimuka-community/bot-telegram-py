@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 from sys import exit
 import time
+import datetime
+
 load_dotenv()
 # for bot command
 Token = os.getenv('API_KEY')
@@ -18,6 +20,7 @@ def help_command(update, context):
 
 def handle_message(update, context):
     resp = response(update)
+    print(datetime.datetime.now(), ":", str(resp))
     update.message.reply_text(resp)
 
 def error(update, context):

@@ -6,4 +6,4 @@ def response(input_text) -> str:
     if text == "/all_data":
         return str(input_text)
     else:
-        return str(chat)
+        return str(message)
