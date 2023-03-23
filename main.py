@@ -1,91 +1,71 @@
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
-from telegram.ext import *
+from telegram import ForceReply, Update
+from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram import __version__ as TG_VER
 from script.response import response
 import os
 from dotenv import load_dotenv
-from sys import exit
-import time
-import datetime
+import logging
+
 
 load_dotenv()
-# for bot command
 Token = os.getenv('API_KEY')
-updater = Updater(Token,use_context=True)
-def start_command(update, context):
-    update.message.reply_text("Welcome")
 
-def help_command(update, context):
-    update.message.reply_text("help command here")
 
-def handle_message(update, context):
-    resp = response(update)
-    print(datetime.datetime.now(), ":", str(resp))
-    update.message.reply_text(resp)
+try:
+    from telegram import __version_info__
+except ImportError:
+    __version_info__ = (0, 0, 0, 0, 0)  # type: ignore[assignment]
 
-def error(update, context):
-    print(f"error {context.error}")
+if __version_info__ < (20, 0, 0, "alpha", 1):
+    raise RuntimeError(
+        f"This example is not compatible with your current PTB version {TG_VER}. To view the "
+        f"{TG_VER} version of this example, "
+        f"visit https://docs.python-telegram-bot.org/en/v{TG_VER}/examples.html"
+    )
 
-def main():
-    print("Bot Started")
-    dp = updater.dispatcher
+# Enable logging
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+logger = logging.getLogger(__name__)
 
-    dp.add_handler(CommandHandler("start", start_command))
-    dp.add_handler(CommandHandler("help", help_command))
 
-    dp.add_handler(MessageHandler(Filters.text, handle_message))
-    dp.add_error_handler(error)
-    start()
+# Define a few command handlers. These usually take the two arguments update and
+# context.
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send a message when the command /start is issued."""
+    user = update.effective_user
+    await update.message.reply_html(
+        rf"Hi {user.mention_html()}!",
+        reply_markup=ForceReply(selective=True),
+    )
 
-def start():
-    updater.start_polling()
-    updater.idle()
 
-def shutdown():
-    updater.stop()
-    updater.is_idle = False
-    print("success shutdown ")
-    # main()
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send a message when the command /help is issued."""
+    await update.message.reply_text("Help!")
 
-def alert():
-    print("please restart server to see the change")
+async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Echo the user message."""
+    print(update)
+    await update.message.reply_text(update)
 
-# for observer event
-def on_created(event):
-    print(f"{event.src_path} has been created!")
-    alert()
+def main() -> None:
+    """Start the bot."""
+    # Create the Application and pass it your bot's token.
+    application = Application.builder().token(Token).build()
 
-def on_deleted(event):
-    print(f"{event.src_path} has been deleted!")
-    alert()
+    # on different commands - answer in Telegram
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("help", help_command))
 
-def on_modified(event):
-    print(f"{event.src_path} has been modified")
-    alert()
-    # shutdown()
+    # on non command i.e message - echo the message on Telegram
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
-def on_moved(event): 
-    print(f"{event.src_path} moving to {event.dest_path}")
-    alert()
-
+    # Run the bot until the user presses Ctrl-C
+    application.run_polling()
 
 if __name__ == "__main__":
-    patterns = ["*.py"]  
-    ignore_patterns = None
-    ignore_directories = False
-    case_sensitive = True
-    my_event_handler = PatternMatchingEventHandler(patterns, ignore_patterns, ignore_directories, case_sensitive)
-    my_event_handler.on_created = on_created
-    my_event_handler.on_deleted = on_deleted
-    my_event_handler.on_modified = on_modified 
-    my_event_handler.on_moved = on_moved
-    path = "."
-    go_recursively = True
-    my_observer = Observer()
-    my_observer.schedule(my_event_handler, path, recursive=go_recursively)
-    my_observer.start()
-    try:
-        main()
-    except KeyboardInterrupt:
-        my_observer.stop()
-        my_observer.join() 
+    main()
