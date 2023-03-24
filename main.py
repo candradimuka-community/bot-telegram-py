@@ -7,11 +7,12 @@ from script.response import response
 import os
 from dotenv import load_dotenv
 import logging
-
+from database import Base, engine
+from helpers import load_from_update
 
 load_dotenv()
 Token = os.getenv('API_KEY')
-
+Base.metadata.create_all(engine)
 
 try:
     from telegram import __version_info__
@@ -31,7 +32,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
 # Define a few command handlers. These usually take the two arguments update and
 # context.
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -49,8 +49,9 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
-    print(update)
-    await update.message.reply_text(update)
+    res = response(load_from_update(update))
+    logger.info(msg=res)
+    await update.message.reply_text(res)
 
 def main() -> None:
     """Start the bot."""

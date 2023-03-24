@@ -1,19 +1,9 @@
-# host    : db-jcc-aio-4326.8nk.cockroachlabs.cloud
-# port    : 26257
-# database: platform_telegram_ajcc
-# username: chairman
-# password: Wqsv8nVZjaLSsOUVKcbX8g
-
-# ----------
-# pyAlchemy
-
-# $env:DATABASE_URL = "cockroachdb://chairman:<ENTER-SQL-USER-PASSWORD>@db-jcc-aio-4326.8nk.cockroachlabs.cloud:26257/platform_telegram_ajcc?sslmode=verify-full"
-# --------------
 import os
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from dotenv import load_dotenv
+load_dotenv()
 
-engine = create_engine(os.environ["DATABASE_URL"])
-conn = engine.connect()
-
-res = conn.execute(text("SELECT now()")).fetchall()
-print(res)
+DATABASE_URL = f"cockroachdb://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}?sslmode=require"
+engine = create_engine(DATABASE_URL)
+Base = declarative_base()
