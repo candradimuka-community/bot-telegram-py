@@ -9,7 +9,8 @@ class MessageLogs(Base):
     created_at = Column(DateTime)
     member_id = Column(Integer, ForeignKey("members.user_id"))
 
-    def __init__(self, id, message, time):
+    def __init__(self, id, message, time, member):
         self.message_id = id
         self.message_data = message
         self.created_at = time
+        self.member_id = member
