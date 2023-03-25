@@ -45,13 +45,18 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
-    await update.message.reply_text("Help!")
+    text = """
+Menu Bantuan.
+/start - Memulai Penggunaan BOT.
+/help - Menu Bantuan.
+    """
+    await update.message.reply_text(text)
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
     res = response(load_from_update(update))
     logger.info(msg=res)
-    await update.message.reply_text(res)
+    # await update.message.reply_text(res)
 
 def main() -> None:
     """Start the bot."""
