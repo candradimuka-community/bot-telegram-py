@@ -1,14 +1,11 @@
-from watchdog.observers import Observer
-from watchdog.events import PatternMatchingEventHandler
-from telegram import ForceReply, Update
-from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from telegram import __version__ as TG_VER
 from script.response import response
 import os
 from dotenv import load_dotenv
-import logging
 from database import Base, engine
 from helpers import load_from_update
+from script.commands import *
 
 load_dotenv()
 Token = os.getenv('API_KEY')
@@ -25,38 +22,6 @@ if __version_info__ < (20, 0, 0, "alpha", 1):
         f"{TG_VER} version of this example, "
         f"visit https://docs.python-telegram-bot.org/en/v{TG_VER}/examples.html"
     )
-
-# Enable logging
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
-logger = logging.getLogger(__name__)
-
-# Define a few command handlers. These usually take the two arguments update and
-# context.
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /start is issued."""
-    user = update.effective_user
-    await update.message.reply_html(
-        rf"Hi {user.mention_html()}!",
-        reply_markup=ForceReply(selective=True),
-    )
-
-
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Send a message when the command /help is issued."""
-    text = """
-Menu Bantuan.
-/start - Memulai Penggunaan BOT.
-/help - Menu Bantuan.
-    """
-    await update.message.reply_text(text)
-
-async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Echo the user message."""
-    res = response(load_from_update(update))
-    logger.info(msg=res)
-    # await update.message.reply_text(res)
 
 def main() -> None:
     """Start the bot."""
