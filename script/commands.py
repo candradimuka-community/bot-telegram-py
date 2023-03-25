@@ -3,8 +3,8 @@ from telegram.ext import ContextTypes
 from script.response import response
 import logging
 from helpers import load_from_update
-
-
+from sqlalchemy import text
+from database import session
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -15,9 +15,9 @@ logger = logging.getLogger(__name__)
 # context.
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
-    user = update.effective_user
+    data = load_from_update(update)
     await update.message.reply_html(
-        rf"Hi {user.mention_html()}!",
+        rf"Hi {data['user']['first_name']}!",
         reply_markup=ForceReply(selective=True),
     )
 
@@ -28,6 +28,9 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 Menu Bantuan.
 /start - Memulai Penggunaan BOT.
 /help - Menu Bantuan.
+/stats - Statistik Chat Saat Ini.
+
+by ajcc 2023.
     """
     await update.message.reply_text(text)
 
@@ -36,3 +39,34 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     res = response(load_from_update(update))
     logger.info(msg=res)
     # await update.message.reply_text(res)
+
+async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send a message when the command /start is issued."""
+    data = load_from_update(update)
+    sql = text("""
+        SELECT
+            m.user_id,
+            m.name,
+            CONCAT('@', m.username) as username,
+            (
+                SELECT COUNT(*)
+                FROM
+                    message_logs ml
+                WHERE
+                    ml.member_id = m.user_id
+            ) as stats
+        FROM
+            members m
+        ORDER BY
+            stats
+        DESC
+        LIMIT 10
+    """)
+    results = session.execute(sql)
+    response = "Statistik Jumlah Chat:"
+    for i, record in enumerate(results):
+        response += f"\n{i+1}. {record[2]} -> {record[3]} chat"
+    await update.message.reply_html(
+        response,
+        reply_markup=ForceReply(selective=True),
+    )

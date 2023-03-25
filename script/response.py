@@ -1,12 +1,9 @@
-from database import engine
+from database import session
 from models.message_logs import MessageLogs
 from models.members import Member
-from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 import psycopg2
 
-Session = sessionmaker(bind=engine)
-session = Session()
 
 def logger(id, message) -> None:
     try:
