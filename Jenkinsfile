@@ -27,9 +27,7 @@ pipeline {
     stage('Deploy to Server') {
       steps {
         sh 'ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$SERVER_HOST \
-        "echo $REGISTRY_PASSWORD >> password.txt && \
-        cat password.txt | docker login -u $REGISTRY_USERNAME --password-stdin $REGISTRY_URL && \
-        rm -rf password.txt && \
+        "cat .password | docker login -u $REGISTRY_USERNAME --password-stdin $REGISTRY_URL && \
         sed -i \\"s/image:.*/image: $IMAGE_DEPLOY:$BUILD_NUMBER/g\\" deployment.yaml && \
         ./update-config.sh"'
       }
