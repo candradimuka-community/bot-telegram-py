@@ -28,6 +28,7 @@ pipeline {
       steps {
         sh 'ssh -o StrictHostKeyChecking=no $SERVER_USERNAME@$SERVER_HOST \
         "cat .password | docker login -u $REGISTRY_USERNAME --password-stdin $REGISTRY_URL && \
+        docker pull $IMAGE_NAME:$BUILD_NUMBER && \
         sed -i \\"s/image:.*/image: $IMAGE_DEPLOY:$BUILD_NUMBER/g\\" deployment.yaml && \
         ./update-config.sh"'
       }
