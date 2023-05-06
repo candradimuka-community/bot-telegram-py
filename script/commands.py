@@ -47,6 +47,8 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     res = response(load_from_update(update))
     logger.info(msg=res)
     # await update.message.reply_text(res)
+    if update.message.text.lower() == "@all":
+        await all_users(update, context)
 
 async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
@@ -97,3 +99,28 @@ async def register(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         chat_id=update.message.from_user.id,
         text=text,
         parse_mode='HTML')
+    
+async def all_users(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    sql = text("""
+        SELECT
+            CONCAT('@', m.username) as username
+        FROM
+            members m
+        LIMIT 10
+    """)
+    results = session.execute(sql)
+    users = ""
+    for res in results:
+        users += f" {res[0]}"
+    must_delete = await update.message.reply_html(
+        text=users,
+        reply_markup=ForceReply(selective=True),
+    )
+    await context.bot.deleteMessage(
+        message_id = must_delete.message_id,
+        chat_id = update.message.chat_id
+    )
+    await update.message.reply_html(
+        "Pinging all active users",
+        reply_markup=ForceReply(selective=True),
+    )
