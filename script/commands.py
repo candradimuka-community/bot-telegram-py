@@ -47,8 +47,11 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     res = response(load_from_update(update))
     logger.info(msg=res)
     # await update.message.reply_text(res)
-    if update.message.text.lower() == "@all":
+    state = update.message.text.lower()
+    if state == "@all":
         await all_users(update, context)
+    elif state == "@admin":
+        await all_admin(update, context)
 
 async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
@@ -122,5 +125,24 @@ async def all_users(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
     await update.message.reply_html(
         "Pinging all active users",
+        reply_markup=ForceReply(selective=True),
+    )
+
+async def all_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    data = await context.bot.get_chat_administrators(update.message.chat_id)
+    
+    users = ""
+    for d in data:
+        users += f" @{d.user.username}"
+    must_delete = await update.message.reply_html(
+        text=users,
+        reply_markup=ForceReply(selective=True),
+    )
+    await context.bot.deleteMessage(
+        message_id = must_delete.message_id,
+        chat_id = update.message.chat_id
+    )
+    await update.message.reply_html(
+        "Pinging all administrators",
         reply_markup=ForceReply(selective=True),
     )
