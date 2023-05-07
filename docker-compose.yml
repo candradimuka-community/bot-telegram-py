@@ -19,6 +19,10 @@ services:
       DB_CLUSTER: ${DB_CLUSTER}
       API_URL: ${API_URL}
       FE_AUTH_URL: ${FE_AUTH_URL}
+      API_ID: ${API_ID}
+      API_HASH: ${API_HASH}
+      USERNAME: ${USERNAME}
+      PHONE: ${PHONE}
     ports:
       # - 80:80
       # - 443:443
