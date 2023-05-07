@@ -1,15 +1,15 @@
 from telegram import ForceReply, Update
 from telegram.ext import ContextTypes
-from script.response import response
+from script.response import response, saveuser
 import logging
 from helpers import load_from_update
 from sqlalchemy import text
 from database import session
 from script.coreapi import *
 import os
-import json
 from dotenv import load_dotenv
 load_dotenv()
+from .scrapper import *
 
 FE_URL = os.getenv('FE_AUTH_URL')
 
@@ -146,3 +146,19 @@ async def all_admin(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         "Pinging all administrators",
         reply_markup=ForceReply(selective=True),
     )
+
+async def scrap_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    cmd = update.message.text.split(" ")
+    if len(cmd) >= 2:
+        data = await scrap_users(cmd[1])
+        for d in data:
+            saveuser(d)
+        await update.message.reply_html(
+            f"Total users scrapped : {len(data)}",
+            reply_markup=ForceReply(selective=True),
+        )
+    else: 
+        await update.message.reply_html(
+            "Please insert telegram group url",
+            reply_markup=ForceReply(selective=True),
+        )
