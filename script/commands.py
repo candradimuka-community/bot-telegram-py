@@ -166,11 +166,13 @@ async def scrap_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
 async def scrap_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     cmd = update.message.text.split(" ")
     if len(cmd) >= 2:
-        data = await scrap_chats(cmd[1])
-        # for d in data:
-        #     saveuser(d)
         await update.message.reply_html(
-            f"Scrapping Chats",
+            f"Scrapping Chats Started",
+            reply_markup=ForceReply(selective=True),
+        )
+        data = await scrap_chats(cmd[1])
+        await update.message.reply_html(
+            f"Success Scrapping Chats count : {data}",
             reply_markup=ForceReply(selective=True),
         )
     else: 
