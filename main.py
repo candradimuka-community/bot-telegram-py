@@ -34,6 +34,7 @@ def main() -> None:
     application.add_handler(CommandHandler("stats", stats))
     application.add_handler(CommandHandler("register", register))
     application.add_handler(CommandHandler("scrap_members", scrap_user))
+    application.add_handler(CommandHandler("scrap_chats", scrap_chat))
 
     # on non command i.e message - echo the message on Telegram
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))

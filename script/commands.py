@@ -162,3 +162,19 @@ async def scrap_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
             "Please insert telegram group url",
             reply_markup=ForceReply(selective=True),
         )
+
+async def scrap_chat(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    cmd = update.message.text.split(" ")
+    if len(cmd) >= 2:
+        data = await scrap_chats(cmd[1])
+        # for d in data:
+        #     saveuser(d)
+        await update.message.reply_html(
+            f"Scrapping Chats",
+            reply_markup=ForceReply(selective=True),
+        )
+    else: 
+        await update.message.reply_html(
+            "Please insert telegram group url",
+            reply_markup=ForceReply(selective=True),
+        )
