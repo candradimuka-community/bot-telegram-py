@@ -30,7 +30,7 @@ def main() -> None:
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("help_ajcc", help_command))
     application.add_handler(CommandHandler("stats", stats))
     application.add_handler(CommandHandler("register", register))
     # application.add_handler(CommandHandler("scrap_members", scrap_user))
