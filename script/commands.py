@@ -34,9 +34,16 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     """Send a message when the command /help is issued."""
     text = """
 Menu Bantuan.
+
+Command:
+
 /start - Memulai Penggunaan BOT.
-/help - Menu Bantuan.
+/help_ajcc - Menu Bantuan.
 /stats - Statistik Chat Saat Ini.
+
+Ping:
+@all - ping semua member.
+@admin - ping semua admin.
 
 by ajcc 2023.
     """
