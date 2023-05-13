@@ -116,11 +116,12 @@ async def all_users(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             CONCAT('@', m.username) as username
         FROM
             members m
-        LIMIT 10
     """)
     results = session.execute(sql)
     users = ""
+    print("pinging all members event")
     for res in results:
+        print(f"pinging {res[0]}")
         users += f" {res[0]}"
     must_delete = await update.message.reply_html(
         text=users,
