@@ -118,19 +118,21 @@ async def all_users(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             members m
     """)
     results = session.execute(sql)
-    users = ""
-    print("pinging all members event")
-    for res in results:
-        print(f"pinging {res[0]}")
-        users += f" {res[0]}"
-    must_delete = await update.message.reply_html(
-        text=users,
-        reply_markup=ForceReply(selective=True),
-    )
-    await context.bot.deleteMessage(
-        message_id = must_delete.message_id,
-        chat_id = update.message.chat_id
-    )
+    datas = [res[0] for res in results]
+    n = 50
+    final_data = [datas[i * n:(i + 1) * n] for i in range((len(datas) + n - 1) // n )]
+    for result in final_data:
+        users = ""
+        for res in result:
+            users += f" {res}"
+        must_delete = await update.message.reply_html(
+            text=users,
+            reply_markup=ForceReply(selective=True),
+        )
+        await context.bot.deleteMessage(
+            message_id = must_delete.message_id,
+            chat_id = update.message.chat_id
+        )
     await update.message.reply_html(
         "Pinging all active users",
         reply_markup=ForceReply(selective=True),
