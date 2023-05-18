@@ -7,6 +7,7 @@ from script.commands.ping import *
 from script.commands.basic import *
 from script.commands.platform import *
 from script.commands.scrapper import *
+from script.commands.role import *
 
 load_dotenv()
 Token = os.getenv('API_KEY')
@@ -34,6 +35,7 @@ def main() -> None:
     application.add_handler(CommandHandler("help_ajcc", help_command))
     application.add_handler(CommandHandler("stats", stats))
     application.add_handler(CommandHandler("register", register))
+    application.add_handler(CommandHandler("role_set", setrole))
     # application.add_handler(CommandHandler("scrap_members", scrap_user))
     # application.add_handler(CommandHandler("scrap_chats", scrap_chat))
     # only can run in local computer
