@@ -1,7 +1,7 @@
 from telegram import Update, ForceReply
 from telegram.ext import ContextTypes
 from helpers import load_from_update
-from sqlalchemy import text
+from sqlalchemy import select, asc
 from database import session
 from models.roles import Roles
 import psycopg2
@@ -38,3 +38,13 @@ async def setrole(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             reply_markup=ForceReply(selective=True),
         )
         session.rollback()
+
+async def getrole(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    stmt = select(Roles).order_by(asc('min_val'))
+    txt = ""
+    for role in session.scalars(stmt):
+        txt += f"{role.role_name} [{role.min_val} -> {role.max_val}]\n"
+    await update.message.reply_html(
+        txt,
+        reply_markup=ForceReply(selective=True),
+    )

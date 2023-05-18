@@ -36,6 +36,7 @@ def main() -> None:
     application.add_handler(CommandHandler("stats", stats))
     application.add_handler(CommandHandler("register", register))
     application.add_handler(CommandHandler("role_set", setrole))
+    application.add_handler(CommandHandler("role_get", getrole))
     # application.add_handler(CommandHandler("scrap_members", scrap_user))
     # application.add_handler(CommandHandler("scrap_chats", scrap_chat))
     # only can run in local computer
