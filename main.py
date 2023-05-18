@@ -1,11 +1,12 @@
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from telegram import __version__ as TG_VER
-from script.response import response
 import os
 from dotenv import load_dotenv
 from database import Base, engine
-from helpers import load_from_update
-from script.commands import *
+from script.commands.ping import *
+from script.commands.basic import *
+from script.commands.platform import *
+from script.commands.scrapper import *
 
 load_dotenv()
 Token = os.getenv('API_KEY')
