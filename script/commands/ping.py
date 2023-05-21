@@ -35,7 +35,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # ChatMemberAdministrator(update.message.from_user.id,False,False,False,False,False,False,False,False,False,True,True,True,False,"si Usman")
     # await update.message.reply_text(res)
     state = update.message.text.lower()
-    if state == "@all":
+    if state == "@semua":
         await all_users(update, context)
     elif state == "@admin":
         await all_admin(update, context)
