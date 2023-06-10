@@ -5,6 +5,7 @@ from sqlalchemy import text
 from database import session
 from script.response import response
 from helpers import load_from_update, logger
+from script.commands.sms_classifier import spam_check
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""
@@ -39,6 +40,7 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await all_users(update, context)
     elif state == "@admin":
         await all_admin(update, context)
+    await spam_check(update, context)
 
 async def all_users(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     sql = text("""

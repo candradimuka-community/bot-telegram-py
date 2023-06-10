@@ -25,6 +25,9 @@ Command:
 /help_ajcc - Menu Bantuan.
 /stats - Statistik Chat Saat Ini.
 
+Command Lain:
+/info_sms_spam - Informasi spam checker
+
 Ping:
 @all - ping semua member.
 @admin - ping semua admin.
