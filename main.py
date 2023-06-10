@@ -8,7 +8,7 @@ from script.commands.basic import *
 from script.commands.platform import *
 from script.commands.scrapper import *
 from script.commands.role import *
-from script.commands.sms_classifier import info_lr_sms
+from script.commands.sms_classifier import info_lr_sms, download_nltk
 
 load_dotenv()
 Token = os.getenv('API_KEY')
@@ -42,6 +42,7 @@ def main() -> None:
     # application.add_handler(CommandHandler("scrap_chats", scrap_chat))
     # only can run in local computer
     application.add_handler(CommandHandler("info_sms_spam", info_lr_sms))
+    application.add_handler(CommandHandler("nltk_download", download_nltk))
 
     # on non command i.e message - echo the message on Telegram
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))

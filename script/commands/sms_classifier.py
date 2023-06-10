@@ -5,6 +5,7 @@ from sqlalchemy import text
 from database import session
 import pickle
 import os
+import nltk
 # Define a few command handlers. These usually take the two arguments update and
 # context.
 async def spam_check(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -36,3 +37,6 @@ Model dilatih oleh @aronei44
     """
     await update.message.reply_text(text)
 
+async def download_nltk(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    nltk.download('stopwords')
+    nltk.download('punkt')
