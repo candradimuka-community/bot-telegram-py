@@ -15,6 +15,6 @@ Note:
 - Rekomendasi pertama adalah film sesuai sinopsis yang diberikan atau yang mendekati
 - Rekomendasi tidak tepat? silakan ambil sinopsis film yang dimaksud dari website https://www.themoviedb.org
 
-- data film cuma sampe awal 2019. wkwkwk
+- data film hanya sampai awal 2019
    """
    await update.message.reply_text(res)
