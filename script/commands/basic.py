@@ -27,7 +27,7 @@ Command:
 
 Command Lain:
 /info_sms_spam - Informasi spam checker
-
+/recommend_me_film_by_synopsis - rekomendasi film berdasarkan sinopsis
 Ping:
 @all - ping semua member.
 @admin - ping semua admin.
