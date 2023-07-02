@@ -9,6 +9,8 @@ from script.commands.platform import *
 from script.commands.scrapper import *
 from script.commands.role import *
 from script.commands.sms_classifier import info_lr_sms, download_nltk
+from script.commands.recommend import *
+from recommendation_system.Film import RecomenderSystem
 
 load_dotenv()
 Token = os.getenv('API_KEY')
@@ -38,6 +40,7 @@ def main() -> None:
     application.add_handler(CommandHandler("register", register))
     application.add_handler(CommandHandler("role_set", setrole))
     application.add_handler(CommandHandler("role_get", getrole))
+    application.add_handler(CommandHandler("recommend_me_film_by_synopsis", getrecommend))
     # application.add_handler(CommandHandler("scrap_members", scrap_user))
     # application.add_handler(CommandHandler("scrap_chats", scrap_chat))
     # only can run in local computer
@@ -50,5 +53,8 @@ def main() -> None:
     # Run the bot until the user presses Ctrl-C
     application.run_polling()
 
+path = os.path.dirname(__file__)
+recsys = RecomenderSystem(path+"/recommendation_system/data/film.csv", "overview")
+recsys.fit()
 if __name__ == "__main__":
     main()
