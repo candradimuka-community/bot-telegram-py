@@ -11,6 +11,7 @@ from script.commands.role import *
 from script.commands.sms_classifier import info_lr_sms, download_nltk
 from script.commands.recommend import *
 from recommendation_system.Film import RecomenderSystem
+import nltk
 
 load_dotenv()
 Token = os.getenv('API_KEY')
@@ -53,6 +54,8 @@ def main() -> None:
     # Run the bot until the user presses Ctrl-C
     application.run_polling()
 
+nltk.download('stopwords')
+nltk.download('punkt')
 path = os.path.dirname(__file__)
 recsys = RecomenderSystem(path+"/recommendation_system/data/film.csv", "overview")
 recsys.fit()
