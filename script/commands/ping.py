@@ -6,6 +6,26 @@ from database import session
 from script.response import response
 from helpers import load_from_update, logger
 from script.commands.sms_classifier import spam_check
+from main import reader_ocr
+import cv2
+import numpy as np
+
+async def document(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    caption = update.message.caption
+    if caption and "ocr" in caption.lower():
+        await update.message.reply_text("Processing... OCR")
+        file = await context.bot.get_file(update.message.photo[-1].file_id)
+        image = cv2.imdecode(
+            np.asarray(bytearray(await file.download_as_bytearray()), dtype=np.uint8),
+            cv2.IMREAD_COLOR,
+        )
+        result = reader_ocr.readtext(image)
+        text = ""
+        await update.message.reply_text("Result OCR")
+        for res in result:
+            text += f"{res[1]} \n"
+        await update.message.reply_text(text)
+        await update.message.reply_text("Done")
 
 async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Echo the user message."""

@@ -9,10 +9,8 @@ from script.commands.platform import *
 from script.commands.scrapper import *
 from script.commands.role import *
 from script.commands.sms_classifier import info_lr_sms, download_nltk
-from script.commands.recommend import *
-from recommendation_system.Film import RecomenderSystem
 import nltk
-
+import easyocr
 load_dotenv()
 Token = os.getenv('API_KEY')
 Base.metadata.create_all(engine)
@@ -41,7 +39,6 @@ def main() -> None:
     application.add_handler(CommandHandler("register", register))
     application.add_handler(CommandHandler("role_set", setrole))
     application.add_handler(CommandHandler("role_get", getrole))
-    application.add_handler(CommandHandler("recommend_me_film_by_synopsis", getrecommend))
     # application.add_handler(CommandHandler("scrap_members", scrap_user))
     # application.add_handler(CommandHandler("scrap_chats", scrap_chat))
     # only can run in local computer
@@ -50,14 +47,13 @@ def main() -> None:
 
     # on non command i.e message - echo the message on Telegram
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+    application.add_handler(MessageHandler(filters.PHOTO, document))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling()
 
 nltk.download('stopwords')
 nltk.download('punkt')
-path = os.path.dirname(__file__)
-recsys = RecomenderSystem(path+"/recommendation_system/data/film.csv", "overview")
-recsys.fit()
+reader_ocr = easyocr.Reader(['en'])
 if __name__ == "__main__":
     main()
